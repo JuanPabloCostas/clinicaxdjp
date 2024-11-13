@@ -1,7 +1,12 @@
+
+
+
 export default function Home() {
-  return (
-    <div className="font-[family-name:var(--font-lexend-zetta)]">
-      Hello World!
-    </div>
-  );
+
+
+    return (
+        <div>
+            <h1>HomePage</h1>
+        </div>
+    )
 }
