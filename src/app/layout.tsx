@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lexendZetta.variable} ${jakartaSans.variable} antialiased`}
+        className={`${lexendZetta.variable} ${jakartaSans.variable} antialiased dark:bg-gray-950`}
       >
         {children}
       </body>
