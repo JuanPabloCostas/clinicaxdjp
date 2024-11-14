@@ -12,7 +12,9 @@ export default function DashboardLayout({
         <Header />
         <div className="grid grid-cols-5 gap-12">
           <SideBar />
-          {children}
+          <div className="w-full px-4">
+            {children}
+          </div>
         </div>
       </section>
     )
