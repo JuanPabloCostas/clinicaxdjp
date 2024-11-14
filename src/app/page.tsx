@@ -5,7 +5,7 @@ export default function Home() {
 
 
     return (
-        <div>
+        <div className="font-sans">
             <h1>HomePage</h1>
         </div>
     )
