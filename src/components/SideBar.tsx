@@ -53,8 +53,8 @@ export default function SideBar() {
 
 
     return (
-        <div className="flex w-80 flex-col items-start">
-            <div className="flex py-6 flex-col gap-1 items-start self-stretch">
+        <div className="flex flex-col items-start">
+            <div className="flex py-2 flex-col gap-1 items-start self-stretch">
                 {sidebarItems.map((sidebaritem, index) => <SideBarItem key={index} metadata={sidebaritem}/>)}
             </div>
         </div>

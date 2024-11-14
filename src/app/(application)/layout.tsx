@@ -10,14 +10,10 @@ export default function DashboardLayout({
       <section className="px-16">
         {/* Include shared UI here e.g. a header or sidebar */}
         <Header />
-        <nav></nav>
-        <div className="flex items-start gap-12 self-stretch">
+        <div className="grid grid-cols-5 gap-12">
           <SideBar />
-          <div>
-            {children}
-          </div>
+          {children}
         </div>
-        
       </section>
     )
   }
