@@ -1,14 +1,16 @@
 import { IconType } from "react-icons";
-import { VscDashboard } from "react-icons/vsc";
-import { CiCalendar, CiSearch } from "react-icons/ci";
 import SideBarItem from "./SidebarItem";
-import { IoIosHeartHalf } from "react-icons/io";
-import { MdOutlineBedroomChild, MdOutlineMedicalInformation } from "react-icons/md";
-import { TbWaveSawTool } from "react-icons/tb";
-import { IoSettingsOutline } from "react-icons/io5";
+import { 
+    MdSpaceDashboard,
+    MdOutlineCalendarToday,
+    MdOutlinePeopleAlt,
+    MdMedicalInformation,
+    MdOutlineElectricalServices,
+    MdMeetingRoom,
+    MdOutlineSettings
+} from "react-icons/md";
 
 export default function SideBar() {
-
 
     interface sidebaritem {
         icon: IconType,
@@ -19,32 +21,32 @@ export default function SideBar() {
 
     const sidebarItems: sidebaritem[] = [
         {
-            icon: VscDashboard,
+            icon: MdSpaceDashboard,
             title: "Dashboard"
         },
         {
-            icon: CiCalendar,
+            icon: MdOutlineCalendarToday,
             title: "Appointments",
             active: true
         },
         {
-            icon: IoIosHeartHalf,
+            icon: MdOutlinePeopleAlt,
             title: "Patients"
         },
         {
-            icon: MdOutlineMedicalInformation,
+            icon: MdMedicalInformation,
             title: "Doctors"
         },
         {
-            icon: TbWaveSawTool,
+            icon: MdOutlineElectricalServices,
             title: "Machines"
         },
         {
-            icon: MdOutlineBedroomChild,
+            icon: MdMeetingRoom,
             title: "Rooms"
         },
         {
-            icon: IoSettingsOutline,
+            icon: MdOutlineSettings,
             title: "Settings"
         },
     ]
