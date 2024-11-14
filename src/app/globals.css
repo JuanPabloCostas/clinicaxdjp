@@ -1,3 +1,6 @@
+@import '@fontsource/lexend-zetta';
+@import '@fontsource/plus-jakarta-sans';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

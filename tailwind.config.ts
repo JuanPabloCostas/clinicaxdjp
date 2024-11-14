@@ -61,6 +61,10 @@ const config: Config = {
           to: { opacity: "0", transform: "translateX(100%)" },
         },
       },
+      fontFamily: {
+        sans: ["Plus Jakarta Sans", "sans-serif"],
+        lexend_zetta: ["Lexend Zetta", "sans-serif"],
+      },
     },
     animation: {
       hide: "hide 150ms cubic-bezier(0.16, 1, 0.3, 1)",
