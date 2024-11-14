@@ -9,6 +9,11 @@ import {
     TableRoot,
     TableRow,
 } from "../table";
+import { AddPatientFlow } from "./types";
+
+interface PatientDashboardProps {
+    setState: (state: AddPatientFlow) => void;
+}
 
 const ITEMS_PER_PAGE = 10;
 
@@ -16,10 +21,20 @@ const ITEMS_PER_PAGE = 10;
 const initialData = [
     { name: "John Doe", age: 45, condition: "Diabetes", nextAppointment: "2023-10-01" },
     { name: "Jane Smith", age: 34, condition: "Hypertension", nextAppointment: "2023-10-02" },
+    { name: "Alice Johnson", age: 28, condition: "Asthma", nextAppointment: "2023-10-03" },
+    { name: "Bob Brown", age: 52, condition: "Obesity", nextAppointment: "2023-10-04" },
+    { name: "Eve White", age: 41, condition: "Arthritis", nextAppointment: "2023-10-05" },
+    { name: "Charlie Black", age: 39, condition: "Depression", nextAppointment: "2023-10-06" },
+    { name: "Grace Green", age: 31, condition: "Migraine", nextAppointment: "2023-10-07" },
+    { name: "Harry Blue", age: 49, condition: "Cancer", nextAppointment: "2023-10-08" },
+    { name: "Ivy Brown", age: 56, condition: "Alzheimer's", nextAppointment: "2023-10-09" },
+    { name: "Jack White", age: 37, condition: "Epilepsy", nextAppointment: "2023-10-10" },
+    { name: "Kelly Green", age: 43, condition: "Parkinson's", nextAppointment: "2023-10-11" },
+    { name: "Liam Black", age: 47, condition: "HIV/AIDS", nextAppointment: "2023-10-12" },
     // ... más datos
 ];
 
-export const PatientTable = ({ setState }) => {
+export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
     const [data, setData] = useState(initialData);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -182,4 +197,4 @@ export const PatientTable = ({ setState }) => {
     );
 };
 
-export default PatientTable;
+export default PatientDashboard;
