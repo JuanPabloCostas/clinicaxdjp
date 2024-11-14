@@ -1,200 +1,185 @@
+import React, { useState, useMemo } from 'react';
 import { Button } from "../button";
-import { Badge } from "../badge";
-import { AddPatientFlow } from "./types";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeaderCell,
+    TableRoot,
+    TableRow,
+} from "../table";
 
-interface PatientDashboardProps {
-    setState: (state: AddPatientFlow) => void;
-}
+const ITEMS_PER_PAGE = 10;
 
-export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
+// Datos de ejemplo
+const initialData = [
+    { name: "John Doe", age: 45, condition: "Diabetes", nextAppointment: "2023-10-01" },
+    { name: "Jane Smith", age: 34, condition: "Hypertension", nextAppointment: "2023-10-02" },
+    // ... más datos
+];
+
+export const PatientTable = ({ setState }) => {
+    const [data, setData] = useState(initialData);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+    // Función para ordenar
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    // Datos filtrados y ordenados
+    const filteredAndSortedData = useMemo(() => {
+        let processedData = [...data];
+        
+        // Filtrar por búsqueda
+        if (searchTerm) {
+            processedData = processedData.filter(item =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Ordenar
+        if (sortConfig.key) {
+            processedData.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+
+        return processedData;
+    }, [data, searchTerm, sortConfig]);
+
+    // Paginación
+    const totalPages = Math.ceil(filteredAndSortedData.length / ITEMS_PER_PAGE);
+    const currentData = filteredAndSortedData.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+
     return (
-        <div className="col-span-4">
-            <div className="w-full flex flex-col items-start justify-start z-[1]">
-                <div className="self-stretch bg-gray-100 overflow-hidden flex flex-row items-center justify-between py-3 gap-[1.5rem]">
-                    <div className="flex flex-row items-center justify-start gap-4">
-                        <div className="font-semibold text-3xl">Patient Management Dashboard</div>
-                        <Badge variant="success">Operational</Badge>
-                    </div>
-                    <Button variant="primary" onClick={() => {}}>Share</Button>
+        <div className="w-full space-y-4">
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex gap-4 items-center">
+                    <input
+                        type="text"
+                        placeholder="Search by patient name..."
+                        className="p-2 border rounded"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <Button 
+                        variant="primary"
+                        onClick={() => setState("registration")}
+                    >
+                        Add Patient
+                    </Button>
                 </div>
-                <div className="self-stretch bg-gray-100 flex flex-row items-start justify-start py-[1.5rem] px-[0rem] gap-[1rem] text-[0.938rem]">
-                    <div className="flex-1 flex flex-col items-start justify-start">
-                            <div className="self-stretch flex flex-row items-center justify-start py-[0.25rem] px-[0rem] text-[0.813rem] text-darkslategray-100">
-                                <div className="flex flex-row items-center justify-start">
-                                    <div className="relative leading-[1rem] font-medium">Patient Name</div>
-                                    <img className="w-[1.5rem] relative h-[1.5rem] overflow-hidden shrink-0" alt="" src="caret-down.svg" />
+            </div>
+
+            <TableRoot>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableHeaderCell 
+                                className="cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleSort('name')}
+                            >
+                                <div className="flex items-center gap-2">
+                                    Patient Name
+                                    {sortConfig.key === 'name' && (
+                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    )}
                                 </div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">John Doe</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Jane Smith</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Mary Johnson</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">James Brown</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Patricia Davis</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Michael Wilson</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Linda Martinez</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Robert Anderson</div>
-                            </div>
-                            <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                                <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Barbara Thomas</div>
-                            </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start">
-                        <div className="self-stretch flex flex-row items-center justify-start py-[0.25rem] px-[0rem] text-[0.813rem] text-darkslategray-100">
-                            <div className="flex flex-row items-center justify-start">
-                                <div className="relative leading-[1rem] font-medium">Age</div>
-                                <img className="w-[1.5rem] relative h-[1.5rem] overflow-hidden shrink-0" alt="" src="caret-down.svg" />
-                            </div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">45</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">34</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">29</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">52</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">47</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">38</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">31</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">49</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">56</div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start">
-                        <div className="self-stretch flex flex-row items-center justify-start py-[0.25rem] px-[0rem] text-[0.813rem] text-darkslategray-100">
-                            <div className="flex flex-row items-center justify-start">
-                                <div className="relative leading-[1rem] font-medium">Condition</div>
-                                <img className="w-[1.5rem] relative h-[1.5rem] overflow-hidden shrink-0" alt="" src="caret-down.svg" />
-                            </div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Diabetes</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Hypertension</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Asthma</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Arthritis</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">COPD</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Heart Disease</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Kidney Disease</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Liver Disease</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">Cancer</div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-start justify-start">
-                        <div className="self-stretch flex flex-row items-center justify-start py-[0.25rem] px-[0rem] text-[0.813rem] text-darkslategray-100">
-                            <div className="flex flex-row items-center justify-start">
-                                <div className="relative leading-[1rem] font-medium">Next Appointment</div>
-                                <img className="w-[1.5rem] relative h-[1.5rem] overflow-hidden shrink-0" alt="" src="caret-down.svg" />
-                            </div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-01</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-02</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-03</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-04</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-05</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-06</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-07</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-08</div>
-                        </div>
-                        <div className="self-stretch border-darkslategray-200 border-t-[1.5px] border-solid flex flex-row items-center justify-start py-[1rem] px-[0rem]">
-                            <div className="relative leading-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap">2023-10-09</div>
-                        </div>
-                    </div>
+                            </TableHeaderCell>
+                            <TableHeaderCell 
+                                className="cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleSort('age')}
+                            >
+                                <div className="flex items-center gap-2">
+                                    Age
+                                    {sortConfig.key === 'age' && (
+                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    )}
+                                </div>
+                            </TableHeaderCell>
+                            <TableHeaderCell 
+                                className="cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleSort('condition')}
+                            >
+                                <div className="flex items-center gap-2">
+                                    Condition
+                                    {sortConfig.key === 'condition' && (
+                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    )}
+                                </div>
+                            </TableHeaderCell>
+                            <TableHeaderCell 
+                                className="cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleSort('nextAppointment')}
+                            >
+                                <div className="flex items-center gap-2">
+                                    Next Appointment
+                                    {sortConfig.key === 'nextAppointment' && (
+                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    )}
+                                </div>
+                            </TableHeaderCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentData.map((patient, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{patient.name}</TableCell>
+                                <TableCell>{patient.age}</TableCell>
+                                <TableCell>{patient.condition}</TableCell>
+                                <TableCell>{patient.nextAppointment}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableRoot>
+
+            {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <Button
+                            key={i + 1}
+                            variant={currentPage === i + 1 ? "primary" : "secondary"}
+                            onClick={() => setCurrentPage(i + 1)}
+                        >
+                            {i + 1}
+                        </Button>
+                    ))}
+                    <Button
+                        variant="secondary"
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </Button>
                 </div>
-                <div className="self-stretch flex flex-row items-center justify-center text-[1rem] text-default-800">
-                    <div className="flex flex-row items-start justify-start gap-[0.5rem]">
-                        <div className="w-[2rem] rounded bg-default-100 h-[2rem] flex flex-row items-center justify-center">
-                            <div className="flex flex-row items-center justify-start pt-[0.062rem] pb-[0rem] pl-[0rem] pr-[0.25rem]">
-                                <img className="w-[0rem] relative max-w-full overflow-hidden h-[0.688rem] object-contain" alt="" src="Arrow 1.svg" />
-                            </div>
-                        </div>
-                        <div className="w-[2rem] rounded bg-selection-menu h-[2rem] flex flex-row items-center justify-center text-main-green">
-                            <div className="relative">1</div>
-                        </div>
-                        <div className="w-[2rem] rounded bg-default-100 h-[2rem] flex flex-row items-center justify-center">
-                            <div className="relative">2</div>
-                        </div>
-                        <div className="w-[2rem] rounded bg-default-100 h-[2rem] flex flex-row items-center justify-center">
-                            <div className="relative">3</div>
-                        </div>
-                        <div className="w-[2rem] rounded bg-default-100 h-[2rem] flex flex-row items-center justify-center">
-                            <div className="relative">4</div>
-                        </div>
-                        <div className="w-[2rem] rounded bg-default-100 h-[2rem] flex flex-row items-center justify-center">
-                            <div className="relative">5</div>
-                        </div>
-                        <div className="w-[2rem] rounded bg-default-100 h-[2rem] flex flex-row items-center justify-center">
-                            <div className="flex flex-row items-center justify-start pt-[0.062rem] pb-[0rem] pl-[0.25rem] pr-[0rem]">
-                                <img className="w-[0rem] relative max-w-full overflow-hidden h-[0.688rem]" alt="" src="Arrow 1.svg" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="rounded-lg bg-forestgreen-100 flex flex-row items-center justify-center py-[0.5rem] px-[1rem] gap-[1rem] z-[0] text-[0.938rem] text-white">
-                <img className="w-[1.5rem] relative h-[1.5rem] overflow-hidden shrink-0" alt="" src="carbon:add.svg" />
-                <div className="w-[8.063rem] relative leading-[1.25rem] font-medium inline-block shrink-0">Add Appointment</div>
-            </div>
-            <h1>Patient Dashboard</h1>
-            <button onClick={() => setState("registration")}>Register Patient</button>
+            )}
         </div>
-    )
-}
+    );
+};
+
+export default PatientTable;
