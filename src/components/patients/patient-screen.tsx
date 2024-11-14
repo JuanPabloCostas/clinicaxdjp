@@ -10,8 +10,8 @@ export const PatientScreen = () => {
     const [state, setState] = useState<AddPatientFlow>("dashboard");
 
     return (
-        <div>
+        <>
             {state === "dashboard" ? <PatientDashboard setState={setState} /> : <PatientRegistrationForm setState={setState} />}
-        </div>
+        </>
     )
 }
