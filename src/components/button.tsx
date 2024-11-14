@@ -44,6 +44,19 @@ const buttonVariants = tv({
         "disabled:bg-green-300 disabled:text-white",
         "disabled:dark:bg-green-800 disabled:dark:text-blue-400",
       ],
+      greenApp: [
+        // border
+        "border-transparent",
+        // text color
+        "text-white dark:text-white",
+        // background color
+        "bg-green-500 dark:bg-blue-500",
+        // hover color
+        "hover:bg-green-600 dark:hover:bg-blue-600",
+        // disabled
+        "disabled:bg-green-300 disabled:text-white",
+        "disabled:dark:bg-green-800 disabled:dark:text-blue-400",
+      ],
       secondary: [
         // border
         "border-gray-300 dark:border-gray-800",

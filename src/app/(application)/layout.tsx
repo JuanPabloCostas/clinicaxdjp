@@ -13,7 +13,7 @@ export default function DashboardLayout({
         <nav></nav>
         <div className="flex items-start gap-12 self-stretch">
           <SideBar />
-          <div>
+          <div className="w-full px-4">
             {children}
           </div>
         </div>
