@@ -9,6 +9,13 @@ import {
     TableRoot,
     TableRow,
 } from "../table";
+import { Input } from '../input';
+import {
+    MdAdd,
+    MdNavigateNext,
+    MdNavigateBefore,
+ } from 'react-icons/md'; 
+
 import { AddPatientFlow } from "./types";
 
 interface PatientDashboardProps {
@@ -63,11 +70,13 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
         // Ordenar
         if (sortConfig.key) {
             processedData.sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key]) {
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                }
-                if (a[sortConfig.key] > b[sortConfig.key]) {
-                    return sortConfig.direction === 'asc' ? 1 : -1;
+                if (sortConfig.key !== null) {
+                    if (a[sortConfig.key] < b[sortConfig.key]) {
+                        return sortConfig.direction === 'asc' ? -1 : 1;
+                    }
+                    if (a[sortConfig.key] > b[sortConfig.key]) {
+                        return sortConfig.direction === 'asc' ? 1 : -1;
+                    }
                 }
                 return 0;
             });
@@ -86,21 +95,20 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
     return (
         <div className="w-full space-y-4">
             <div className="flex justify-between items-center mb-4">
-                <div className="flex gap-4 items-center">
-                    <input
-                        type="text"
-                        placeholder="Search by patient name..."
-                        className="p-2 border rounded"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <Button 
-                        variant="primary"
-                        onClick={() => setState("registration")}
-                    >
-                        Add Patient
-                    </Button>
-                </div>
+                <Input
+                    className='w-1/3'
+                    placeholder="Search by patient name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    type='search'
+                />
+                <Button 
+                    variant="green"
+                    onClick={() => setState("registration")}
+                    icon={<MdAdd size={18} />}
+                >
+                    Add Patient
+                </Button>
             </div>
 
             <TableRoot>
@@ -111,7 +119,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                                 className="cursor-pointer hover:bg-gray-100"
                                 onClick={() => handleSort('name')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 select-none">
                                     Patient Name
                                     {sortConfig.key === 'name' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
@@ -122,7 +130,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                                 className="cursor-pointer hover:bg-gray-100"
                                 onClick={() => handleSort('age')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 select-none">
                                     Age
                                     {sortConfig.key === 'age' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
@@ -133,7 +141,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                                 className="cursor-pointer hover:bg-gray-100"
                                 onClick={() => handleSort('condition')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 select-none">
                                     Condition
                                     {sortConfig.key === 'condition' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
@@ -144,7 +152,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                                 className="cursor-pointer hover:bg-gray-100"
                                 onClick={() => handleSort('nextAppointment')}
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 select-none">
                                     Next Appointment
                                     {sortConfig.key === 'nextAppointment' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
@@ -167,19 +175,20 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
             </TableRoot>
 
             {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-4">
+                <div className="flex justify-center gap-2 pb-4">
                     <Button
                         variant="secondary"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
+                        icon={<MdNavigateBefore size={18} />}
                     >
-                        Previous
                     </Button>
                     {Array.from({ length: totalPages }, (_, i) => (
                         <Button
                             key={i + 1}
-                            variant={currentPage === i + 1 ? "primary" : "secondary"}
+                            variant={currentPage === i + 1 ? "green" : "secondary"}
                             onClick={() => setCurrentPage(i + 1)}
+                            className='w-9'
                         >
                             {i + 1}
                         </Button>
@@ -188,9 +197,8 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                         variant="secondary"
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </Button>
+                        icon={<MdNavigateNext size={18} />}
+                    />
                 </div>
             )}
         </div>

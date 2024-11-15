@@ -124,6 +124,7 @@ interface ButtonProps
   asChild?: boolean
   isLoading?: boolean
   loadingText?: string
+  icon?: React.ReactNode
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -136,6 +137,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       variant,
       children,
+      icon,
       ...props
     }: ButtonProps,
     forwardedRef,
@@ -161,7 +163,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             {loadingText ? loadingText : children}
           </span>
         ) : (
-          children
+          <span className="flex gap-2 items-center">
+            {icon && <span>{icon}</span>}
+            {children}
+          </span>
         )}
       </Component>
     )
