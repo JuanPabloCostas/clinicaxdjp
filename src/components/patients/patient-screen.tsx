@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AddPatientFlow } from "./types";
+import { AddPatientFlow } from "../types";
 import { PatientDashboard } from "./patient-dashboard";
 import { PatientRegistrationForm } from "./patient-registration-form";
 

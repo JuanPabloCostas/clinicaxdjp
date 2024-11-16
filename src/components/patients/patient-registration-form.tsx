@@ -11,7 +11,7 @@ import {
     SelectValue,
   } from "../select";
 
-import { AddPatientFlow } from "./types";
+import { AddPatientFlow } from "../types";
 
 interface PatientRegistrationFormProps {
     setState: (state: AddPatientFlow) => void;
