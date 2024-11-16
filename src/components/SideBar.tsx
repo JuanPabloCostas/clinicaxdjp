@@ -1,5 +1,7 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import { IconType } from "react-icons";
-import SideBarItem from "./SidebarItem";
 import { 
     MdSpaceDashboard,
     MdOutlineCalendarToday,
@@ -10,13 +12,14 @@ import {
     MdOutlineSettings
 } from "react-icons/md";
 
+import SidebarItem from "./SidebarItem";
+
 export default function SideBar() {
+    const pathname = usePathname();
 
     interface sidebaritem {
         icon: IconType,
         title: string,
-        link?: string,
-        active?: boolean,
     }
 
     const sidebarItems: sidebaritem[] = [
@@ -26,8 +29,7 @@ export default function SideBar() {
         },
         {
             icon: MdOutlineCalendarToday,
-            title: "Appointments",
-            active: true
+            title: "Appointments"
         },
         {
             icon: MdOutlinePeopleAlt,
@@ -51,12 +53,20 @@ export default function SideBar() {
         },
     ]
 
+    const isActiveRoute = (path: string) => {
+        // Exact match for home page
+        if (path === '/') {
+            return pathname === '/';
+        }
+        // For other routes, check if pathname starts with the path
+        return pathname.startsWith(path);
+    };
 
     return (
-        <div className="flex flex-col items-start">
-            <div className="flex py-2 flex-col gap-1 items-start self-stretch">
-                {sidebarItems.map((sidebaritem, index) => <SideBarItem key={index} metadata={sidebaritem}/>)}
-            </div>
+        <div className="flex flex-col py-2 gap-1 items-stretch">
+            {sidebarItems.map((sidebaritem, index) => (
+                <SidebarItem key={index} metadata={{icon: sidebaritem.icon, title: sidebaritem.title, isActiveRoute: isActiveRoute(`/${sidebaritem.title.toLowerCase()}`)}} />
+            ))}
         </div>
     )
 }

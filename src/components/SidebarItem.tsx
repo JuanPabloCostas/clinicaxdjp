@@ -1,19 +1,20 @@
+import Link from 'next/link'; // o import { Link } from 'react-router-dom';
+
 import { IconType } from "react-icons"
 
 interface sidebaritem {
     icon: IconType,
     title: string,
-    link?: string,
-    active?: boolean,
+    isActiveRoute: boolean
 }
 
-export default function SideBarItem({metadata} : {metadata : sidebaritem}) {
-
-    const IconComponent = metadata.icon
-    return(
-        <div className={`flex px-2 py-2 items-center gap-4 self-stretch rounded-lg ${metadata.active ? "bg-[#35793729]" : ""} hover:bg-[#35793729] `}>
-            <IconComponent size={18} />
-            <span className="text-sm font-semibold">{metadata.title}</span>
-        </div>
+export default function SidebarItem({metadata} : {metadata : sidebaritem}) {
+    return (
+        <Link href={metadata.title === "Dashboard" ? "/" : `/${metadata.title.toLowerCase()}`}>
+            <div className={`w-full flex items-center space-x-2 p-2 rounded-lg ${metadata.isActiveRoute ? 'bg-[#35793729]' : ''} hover:bg-[#35793729]`}>
+                <metadata.icon size={24} />
+                <span>{metadata.title}</span>
+            </div>
+        </Link>
     )
 }

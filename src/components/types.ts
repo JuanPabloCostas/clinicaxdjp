@@ -1,0 +1,1 @@
+export type SideBarSelection = "Dashboard" | "Apointments" | "Patients" | "Doctors" | "Machines" | "Rooms" | "Settings";
