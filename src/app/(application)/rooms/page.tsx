@@ -21,18 +21,18 @@ import AppHeader from "@/components/app/appHeader"
 
 const ITEMS_PER_PAGE = 10;
 const initialData = [
-    { id: "M001", location: "ICU", model: "Model 1", brand: "Brand 1", status: "Operational"},
-    { id: "M002", location: "ER", model: "Model 2", brand: "Brand 2", status: "Maintenance"},
-    { id: "M003", location: "OR", model: "Model 3", brand: "Brand 3", status: "Desactivated"},
-    { id: "M004", location: "ICU", model: "Model 4", brand: "Brand 4", status: "Operational"},
-    { id: "M005", location: "ER", model: "Model 5", brand: "Brand 5", status: "Maintenance"},
-    { id: "M006", location: "OR", model: "Model 6", brand: "Brand 6", status: "Desactivated"},
-    { id: "M007", location: "ICU", model: "Model 7", brand: "Brand 7", status: "Operational"},
-    { id: "M008", location: "ER", model: "Model 8", brand: "Brand 8", status: "Maintenance"},
-    { id: "M009", location: "OR", model: "Model 9", brand: "Brand 9", status: "Desactivated"},
-    { id: "M010", location: "ICU", model: "Model 10", brand: "Brand 10", status: "Operational"},
-    { id: "M011", location: "ER", model: "Model 11", brand: "Brand 11", status: "Maintenance"},
-    { id: "M012", location: "OR", model: "Model 12", brand: "Brand 12", status: "Desactivated"},
+    { id: 101, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
+    { id: 102, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
+    { id: 103, occupancy: "Vacant", patient: "", status: "Closed"},
+    { id: 104, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
+    { id: 105, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
+    { id: 106, occupancy: "Vacant", patient: "", status: "Closed"},
+    { id: 107, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
+    { id: 108, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
+    { id: 109, occupancy: "Vacant", patient: "", status: "Closed"},
+    { id: 110, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
+    { id: 111, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
+    { id: 112, occupancy: "Vacant", patient: "", status: "Closed"},
     // ... más datos
 ];
 
@@ -58,7 +58,7 @@ export default function page() {
         // Filtrar por búsqueda
         if (searchTerm) {
             processedData = processedData.filter(item =>
-                item.id.toLowerCase().includes(searchTerm.toLowerCase())
+                item.id.toString().includes(searchTerm)
             );
         }
 
@@ -89,7 +89,7 @@ export default function page() {
     
     return (
         <div className="w-full space-y-4">
-            <AppHeader metadata={{title: "Machine Administration"}} />
+            <AppHeader metadata={{title: "Rooms Administration"}} />
             <div className="flex justify-between items-center mb-4">
                 <Input
                     className='w-1/3'
@@ -105,44 +105,33 @@ export default function page() {
                         <TableRow>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("Machine ID")}
+                                onClick={() => handleSort("ID")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Machine ID
-                                    {sortConfig.key === "Machine ID" && (
+                                    Room Number
+                                    {sortConfig.key === "ID" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("location")}
+                                onClick={() => handleSort("occupancy")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Location
-                                    {sortConfig.key === "location" && (
+                                    Occupancy
+                                    {sortConfig.key === "occupancy" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("model")}
+                                onClick={() => handleSort("patient")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Model
-                                    {sortConfig.key === "model" && (
-                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
-                                    )}
-                                </div>
-                            </TableHeaderCell>
-                            <TableHeaderCell
-                                className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("brand")}
-                            >
-                                <div className="flex items-center gap-2 select-none">
-                                    Brand
-                                    {sortConfig.key === "brand" && (
+                                    Patient
+                                    {sortConfig.key === "patient" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
@@ -161,18 +150,17 @@ export default function page() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {currentData.map((machine, index) => (
+                        {currentData.map((room, index) => (
                             <TableRow key={index}>
-                                <TableCell>{machine.id}</TableCell>
-                                <TableCell>{machine.location}</TableCell>
-                                <TableCell>{machine.model}</TableCell>
-                                <TableCell>{machine.brand}</TableCell>
+                                <TableCell>{room.id}</TableCell>
+                                <TableCell>{room.occupancy}</TableCell>
+                                <TableCell>{room.patient}</TableCell>
                                 <TableCell>
                                     <div className='w-fit p-1 px-2 flex items-center gap-2 bg-[#31723417] rounded-lg'>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-                                            <circle cx="3" cy="3" r="3" fill={machine.status === "Operational" ? "#098833" : machine.status === "Maintenance" ? "orange" : "red"}/>
+                                            <circle cx="3" cy="3" r="3" fill={room.status === "Operational" ? "#098833" : room.status === "Maintenance" ? "orange" : "red"}/>
                                         </svg>
-                                        {machine.status}
+                                        {room.status}
                                     </div>
                                 </TableCell>
                             </TableRow>
