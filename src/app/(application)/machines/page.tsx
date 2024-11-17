@@ -13,6 +13,7 @@ import {
 } from '@/components/table';
 import { Input } from '@/components/input';
 import {
+    MdAdd,
     MdNavigateNext,
     MdNavigateBefore,
 } from 'react-icons/md';
@@ -21,18 +22,18 @@ import AppHeader from "@/components/app/appHeader"
 
 const ITEMS_PER_PAGE = 10;
 const initialData = [
-    { name: "John Doe", specialty: "Cardiology", email: "johndoe@example.com", phone: "555-1234" },
-    { name: "Jane Smith", specialty: "Dermatology", email: "janesmith@example.com", phone: "555-5678" },
-    { name: "Alice Johnson", specialty: "Endocrinology", email: "alicejohnson@example.com", phone: "555-9012" },
-    { name: "Bob Brown", specialty: "Gastroenterology", email: "bobbrown@example.com", phone: "555-3456" },
-    { name: "Eve White", specialty: "Hematology", email: "evewhite@example.com", phone: "555-7890" },
-    { name: "Charlie Black", specialty: "Infectious Disease", email: "charlieblack@example.com", phone: "555-2345" },
-    { name: "Grace Green", specialty: "Nephrology", email: "gracegreen@example.com", phone: "555-6789" },
-    { name: "Harry Blue", specialty: "Neurology", email: "harryblue@example.com", phone: "555-0123" },
-    { name: "Ivy Brown", specialty: "Oncology", email: "ivybrown@example.com", phone: "555-4567" },
-    { name: "Jack White", specialty: "Pulmonology", email: "jackwhite@example.com", phone: "555-8901" },
-    { name: "Kelly Green", specialty: "Rheumatology", email: "kellygreen@example.com", phone: "555-2345" },
-    { name: "Liam Black", specialty: "Urology", email: "liamblack@example.com", phone: "555-6789" },
+    { id: "M001", location: "ICU", model: "Model 1", brand: "Brand 1", status: "Operational"},
+    { id: "M002", location: "ER", model: "Model 2", brand: "Brand 2", status: "Maintenance"},
+    { id: "M003", location: "OR", model: "Model 3", brand: "Brand 3", status: "Desactivated"},
+    { id: "M004", location: "ICU", model: "Model 4", brand: "Brand 4", status: "Operational"},
+    { id: "M005", location: "ER", model: "Model 5", brand: "Brand 5", status: "Maintenance"},
+    { id: "M006", location: "OR", model: "Model 6", brand: "Brand 6", status: "Desactivated"},
+    { id: "M007", location: "ICU", model: "Model 7", brand: "Brand 7", status: "Operational"},
+    { id: "M008", location: "ER", model: "Model 8", brand: "Brand 8", status: "Maintenance"},
+    { id: "M009", location: "OR", model: "Model 9", brand: "Brand 9", status: "Desactivated"},
+    { id: "M010", location: "ICU", model: "Model 10", brand: "Brand 10", status: "Operational"},
+    { id: "M011", location: "ER", model: "Model 11", brand: "Brand 11", status: "Maintenance"},
+    { id: "M012", location: "OR", model: "Model 12", brand: "Brand 12", status: "Desactivated"},
     // ... más datos
 ];
 
@@ -58,7 +59,7 @@ export default function page() {
         // Filtrar por búsqueda
         if (searchTerm) {
             processedData = processedData.filter(item =>
-                item.name.toLowerCase().includes(searchTerm.toLowerCase())
+                item.id.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -89,11 +90,11 @@ export default function page() {
     
     return (
         <div className="w-full space-y-4">
-            <AppHeader metadata={{title: "Doctor Management"}} />
+            <AppHeader metadata={{title: "Machine Administration"}} />
             <div className="flex justify-between items-center mb-4">
                 <Input
                     className='w-1/3'
-                    placeholder="Search by name"
+                    placeholder="Search by ID"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     type='search'
@@ -105,44 +106,55 @@ export default function page() {
                         <TableRow>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("name")}
+                                onClick={() => handleSort("Machine ID")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Doctor Name
-                                    {sortConfig.key === "name" && (
+                                    Machine ID
+                                    {sortConfig.key === "Machine ID" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("specialty")}
+                                onClick={() => handleSort("location")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Specialty
-                                    {sortConfig.key === "specialty" && (
+                                    Location
+                                    {sortConfig.key === "location" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("email")}
+                                onClick={() => handleSort("model")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Email
-                                    {sortConfig.key === "email" && (
+                                    Model
+                                    {sortConfig.key === "model" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("phone")}
+                                onClick={() => handleSort("brand")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Phone
-                                    {sortConfig.key === "phone" && (
+                                    Brand
+                                    {sortConfig.key === "brand" && (
+                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
+                                    )}
+                                </div>
+                            </TableHeaderCell>
+                            <TableHeaderCell
+                                className='cursor-pointer hover:bg-gray-100'
+                                onClick={() => handleSort("status")}
+                            >
+                                <div className="flex items-center gap-2 select-none">
+                                    Status
+                                    {sortConfig.key === "status" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
@@ -150,12 +162,20 @@ export default function page() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {currentData.map((doctor, index) => (
+                        {currentData.map((machine, index) => (
                             <TableRow key={index}>
-                                <TableCell>{doctor.name}</TableCell>
-                                <TableCell>{doctor.specialty}</TableCell>
-                                <TableCell>{doctor.email}</TableCell>
-                                <TableCell>{doctor.phone}</TableCell>
+                                <TableCell>{machine.id}</TableCell>
+                                <TableCell>{machine.location}</TableCell>
+                                <TableCell>{machine.model}</TableCell>
+                                <TableCell>{machine.brand}</TableCell>
+                                <TableCell>
+                                    <div className='w-fit p-1 px-2 flex items-center gap-2 bg-[#31723417] rounded-lg'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
+                                            <circle cx="3" cy="3" r="3" fill={machine.status === "Operational" ? "#098833" : machine.status === "Maintenance" ? "orange" : "red"}/>
+                                        </svg>
+                                        {machine.status}
+                                    </div>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
