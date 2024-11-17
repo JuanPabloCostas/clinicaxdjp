@@ -94,7 +94,7 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
 
     return (
         <div className="w-full space-y-4">
-            <AppHeader metadata={{title: "Appointments"}} />
+            <AppHeader metadata={{title: "Appointment Management"}} />
             <div className="flex justify-between items-center mb-4">
                 <Input
                     className='w-1/3'

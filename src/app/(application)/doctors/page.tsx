@@ -1,5 +1,7 @@
+'use client'
+
 import React, { useState, useMemo } from 'react';
-import { Button } from "../button";
+import { Button } from '@/components/button';
 import {
     Table,
     TableBody,
@@ -8,41 +10,34 @@ import {
     TableHeaderCell,
     TableRoot,
     TableRow,
-} from "../table";
-import { Input } from '../input';
+} from '@/components/table';
+import { Input } from '@/components/input';
 import {
     MdAdd,
     MdNavigateNext,
     MdNavigateBefore,
-} from 'react-icons/md'; 
+} from 'react-icons/md';
 
-import { AddPatientFlow } from "../types";
-import AppHeader from '../app/appHeader';
-
-interface PatientDashboardProps {
-    setState: (state: AddPatientFlow) => void;
-}
+import AppHeader from "@/components/app/appHeader"
 
 const ITEMS_PER_PAGE = 10;
-
-// Datos de ejemplo
 const initialData = [
-    { name: "John Doe", age: 45, condition: "Diabetes", nextAppointment: "2023-10-01" },
-    { name: "Jane Smith", age: 34, condition: "Hypertension", nextAppointment: "2023-10-02" },
-    { name: "Alice Johnson", age: 28, condition: "Asthma", nextAppointment: "2023-10-03" },
-    { name: "Bob Brown", age: 52, condition: "Obesity", nextAppointment: "2023-10-04" },
-    { name: "Eve White", age: 41, condition: "Arthritis", nextAppointment: "2023-10-05" },
-    { name: "Charlie Black", age: 39, condition: "Depression", nextAppointment: "2023-10-06" },
-    { name: "Grace Green", age: 31, condition: "Migraine", nextAppointment: "2023-10-07" },
-    { name: "Harry Blue", age: 49, condition: "Cancer", nextAppointment: "2023-10-08" },
-    { name: "Ivy Brown", age: 56, condition: "Alzheimer's", nextAppointment: "2023-10-09" },
-    { name: "Jack White", age: 37, condition: "Epilepsy", nextAppointment: "2023-10-10" },
-    { name: "Kelly Green", age: 43, condition: "Parkinson's", nextAppointment: "2023-10-11" },
-    { name: "Liam Black", age: 47, condition: "HIV/AIDS", nextAppointment: "2023-10-12" },
+    { name: "John Doe", specialty: "Cardiology", email: "johndoe@example.com", phone: "555-1234" },
+    { name: "Jane Smith", specialty: "Dermatology", email: "janesmith@example.com", phone: "555-5678" },
+    { name: "Alice Johnson", specialty: "Endocrinology", email: "alicejohnson@example.com", phone: "555-9012" },
+    { name: "Bob Brown", specialty: "Gastroenterology", email: "bobbrown@example.com", phone: "555-3456" },
+    { name: "Eve White", specialty: "Hematology", email: "evewhite@example.com", phone: "555-7890" },
+    { name: "Charlie Black", specialty: "Infectious Disease", email: "charlieblack@example.com", phone: "555-2345" },
+    { name: "Grace Green", specialty: "Nephrology", email: "gracegreen@example.com", phone: "555-6789" },
+    { name: "Harry Blue", specialty: "Neurology", email: "harryblue@example.com", phone: "555-0123" },
+    { name: "Ivy Brown", specialty: "Oncology", email: "ivybrown@example.com", phone: "555-4567" },
+    { name: "Jack White", specialty: "Pulmonology", email: "jackwhite@example.com", phone: "555-8901" },
+    { name: "Kelly Green", specialty: "Rheumatology", email: "kellygreen@example.com", phone: "555-2345" },
+    { name: "Liam Black", specialty: "Urology", email: "liamblack@example.com", phone: "555-6789" },
     // ... más datos
 ];
 
-export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
+export default function page() {
     const [data, setData] = useState(initialData);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -92,103 +87,94 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
-
+    
     return (
         <div className="w-full space-y-4">
-            <AppHeader metadata={{ title: "Patient Management" }} />
+            <AppHeader metadata={{title: "Doctor Management"}} />
             <div className="flex justify-between items-center mb-4">
                 <Input
                     className='w-1/3'
-                    placeholder="Search by patient name..."
+                    placeholder="Search by name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     type='search'
                 />
-                <Button 
-                    variant="green"
-                    onClick={() => setState("registration")}
-                    icon={<MdAdd size={18} />}
-                >
-                    Add Patient
-                </Button>
             </div>
-
             <TableRoot>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableHeaderCell 
-                                className="cursor-pointer hover:bg-gray-100"
-                                onClick={() => handleSort('name')}
+                            <TableHeaderCell
+                                className='cursor-pointer hover:bg-gray-100'
+                                onClick={() => handleSort("name")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Patient Name
-                                    {sortConfig.key === 'name' && (
-                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    Doctor Name
+                                    {sortConfig.key === "name" && (
+                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
-                            <TableHeaderCell 
-                                className="cursor-pointer hover:bg-gray-100"
-                                onClick={() => handleSort('age')}
+                            <TableHeaderCell
+                                className='cursor-pointer hover:bg-gray-100'
+                                onClick={() => handleSort("specialty")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Age
-                                    {sortConfig.key === 'age' && (
-                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    Specialty
+                                    {sortConfig.key === "specialty" && (
+                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
-                            <TableHeaderCell 
-                                className="cursor-pointer hover:bg-gray-100"
-                                onClick={() => handleSort('condition')}
+                            <TableHeaderCell
+                                className='cursor-pointer hover:bg-gray-100'
+                                onClick={() => handleSort("email")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Condition
-                                    {sortConfig.key === 'condition' && (
-                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    Email
+                                    {sortConfig.key === "email" && (
+                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
-                            <TableHeaderCell 
-                                className="cursor-pointer hover:bg-gray-100"
-                                onClick={() => handleSort('nextAppointment')}
+                            <TableHeaderCell
+                                className='cursor-pointer hover:bg-gray-100'
+                                onClick={() => handleSort("phone")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Next Appointment
-                                    {sortConfig.key === 'nextAppointment' && (
-                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    Phone
+                                    {sortConfig.key === "phone" && (
+                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {currentData.map((patient, index) => (
+                        {currentData.map((doctor, index) => (
                             <TableRow key={index}>
-                                <TableCell>{patient.name}</TableCell>
-                                <TableCell>{patient.age}</TableCell>
-                                <TableCell>{patient.condition}</TableCell>
-                                <TableCell>{patient.nextAppointment}</TableCell>
+                                <TableCell>{doctor.name}</TableCell>
+                                <TableCell>{doctor.specialty}</TableCell>
+                                <TableCell>{doctor.email}</TableCell>
+                                <TableCell>{doctor.phone}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableRoot>
-
+            
             {totalPages > 1 && (
                 <div className="flex justify-center gap-2 pb-4">
                     <Button
-                        variant="secondary"
+                        variant='secondary'
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
                         icon={<MdNavigateBefore size={18} />}
-                    >
-                    </Button>
+                    />
                     {Array.from({ length: totalPages }, (_, i) => (
                         <Button
                             key={i + 1}
-                            variant={currentPage === i + 1 ? "green" : "secondary"}
+                            variant={currentPage === i + 1 ? 'green' : 'secondary'}
                             onClick={() => setCurrentPage(i + 1)}
                             className='w-9'
                         >
@@ -196,7 +182,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                         </Button>
                     ))}
                     <Button
-                        variant="secondary"
+                        variant='secondary'
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
                         icon={<MdNavigateNext size={18} />}
@@ -205,6 +191,4 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
             )}
         </div>
     );
-};
-
-export default PatientDashboard;
+}
