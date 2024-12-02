@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/button';
 import {
     Table,
@@ -15,24 +15,24 @@ import { Input } from '@/components/input';
 import {
     MdNavigateNext,
     MdNavigateBefore,
+    MdAdd,
 } from 'react-icons/md';
 
 import AppHeader from "@/components/app/appHeader"
+import { useRouter } from 'next/navigation';
+
+interface Machine {
+    id: string;
+    machineName: string;
+    type: string;
+    roomName: string;
+    status: "Operational" | "Maintenance" | "Desactivated" | string;
+}
 
 const ITEMS_PER_PAGE = 10;
-const initialData = [
-    { id: "M001", location: "ICU", model: "Model 1", brand: "Brand 1", status: "Operational"},
-    { id: "M002", location: "ER", model: "Model 2", brand: "Brand 2", status: "Maintenance"},
-    { id: "M003", location: "OR", model: "Model 3", brand: "Brand 3", status: "Desactivated"},
-    { id: "M004", location: "ICU", model: "Model 4", brand: "Brand 4", status: "Operational"},
-    { id: "M005", location: "ER", model: "Model 5", brand: "Brand 5", status: "Maintenance"},
-    { id: "M006", location: "OR", model: "Model 6", brand: "Brand 6", status: "Desactivated"},
-    { id: "M007", location: "ICU", model: "Model 7", brand: "Brand 7", status: "Operational"},
-    { id: "M008", location: "ER", model: "Model 8", brand: "Brand 8", status: "Maintenance"},
-    { id: "M009", location: "OR", model: "Model 9", brand: "Brand 9", status: "Desactivated"},
-    { id: "M010", location: "ICU", model: "Model 10", brand: "Brand 10", status: "Operational"},
-    { id: "M011", location: "ER", model: "Model 11", brand: "Brand 11", status: "Maintenance"},
-    { id: "M012", location: "OR", model: "Model 12", brand: "Brand 12", status: "Desactivated"},
+const initialData: Machine[] = [
+    // ... datos
+    
     // ... más datos
 ];
 
@@ -41,6 +41,8 @@ export default function page() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
+
+    const router = useRouter();
 
     // Función para ordenar
     const handleSort = (key: string) => {
@@ -86,6 +88,19 @@ export default function page() {
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    const getMachines = async () => {
+        const response = await fetch("/api/machines");
+        const data = await response.json();
+        setData(data.machines);
+    };
+
+    useEffect(() => {
+      
+      getMachines();
+      
+    }, [])
+    
     
     return (
         <div className="w-full space-y-4">
@@ -98,6 +113,13 @@ export default function page() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     type='search'
                 />
+                <Button 
+                    variant="green"
+                    onClick={() => {router.push("/machines/add")}}
+                    icon={<MdAdd size={18} />}
+                >
+                    Add Machine
+                </Button>
             </div>
             <TableRoot>
                 <Table>
@@ -108,7 +130,7 @@ export default function page() {
                                 onClick={() => handleSort("Machine ID")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Machine ID
+                                    Machine Name
                                     {sortConfig.key === "Machine ID" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
@@ -119,7 +141,7 @@ export default function page() {
                                 onClick={() => handleSort("location")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Location
+                                    Type
                                     {sortConfig.key === "location" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
@@ -130,23 +152,13 @@ export default function page() {
                                 onClick={() => handleSort("model")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Model
+                                    Room
                                     {sortConfig.key === "model" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
                             </TableHeaderCell>
-                            <TableHeaderCell
-                                className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("brand")}
-                            >
-                                <div className="flex items-center gap-2 select-none">
-                                    Brand
-                                    {sortConfig.key === "brand" && (
-                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
-                                    )}
-                                </div>
-                            </TableHeaderCell>
+                            
                             <TableHeaderCell
                                 className='cursor-pointer hover:bg-gray-100'
                                 onClick={() => handleSort("status")}
@@ -163,10 +175,9 @@ export default function page() {
                     <TableBody>
                         {currentData.map((machine, index) => (
                             <TableRow key={index}>
-                                <TableCell>{machine.id}</TableCell>
-                                <TableCell>{machine.location}</TableCell>
-                                <TableCell>{machine.model}</TableCell>
-                                <TableCell>{machine.brand}</TableCell>
+                                <TableCell>{machine.machineName}</TableCell>
+                                <TableCell>{machine.type}</TableCell>
+                                <TableCell>{machine.roomName}</TableCell>
                                 <TableCell>
                                     <div className='w-fit p-1 px-2 flex items-center gap-2 bg-[#31723417] rounded-lg'>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">

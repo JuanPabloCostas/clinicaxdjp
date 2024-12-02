@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from "../button";
 import {
     Table,
@@ -23,22 +23,18 @@ interface PatientDashboardProps {
     setState: (state: AddPatientFlow) => void;
 }
 
+interface Patient {
+    id: string;
+    firstName: string;
+    age?: number;
+    email: string;
+    phoneNumber?: string;
+}
+
 const ITEMS_PER_PAGE = 10;
 
 // Datos de ejemplo
-const initialData = [
-    { name: "John Doe", age: 45, condition: "Diabetes", nextAppointment: "2023-10-01" },
-    { name: "Jane Smith", age: 34, condition: "Hypertension", nextAppointment: "2023-10-02" },
-    { name: "Alice Johnson", age: 28, condition: "Asthma", nextAppointment: "2023-10-03" },
-    { name: "Bob Brown", age: 52, condition: "Obesity", nextAppointment: "2023-10-04" },
-    { name: "Eve White", age: 41, condition: "Arthritis", nextAppointment: "2023-10-05" },
-    { name: "Charlie Black", age: 39, condition: "Depression", nextAppointment: "2023-10-06" },
-    { name: "Grace Green", age: 31, condition: "Migraine", nextAppointment: "2023-10-07" },
-    { name: "Harry Blue", age: 49, condition: "Cancer", nextAppointment: "2023-10-08" },
-    { name: "Ivy Brown", age: 56, condition: "Alzheimer's", nextAppointment: "2023-10-09" },
-    { name: "Jack White", age: 37, condition: "Epilepsy", nextAppointment: "2023-10-10" },
-    { name: "Kelly Green", age: 43, condition: "Parkinson's", nextAppointment: "2023-10-11" },
-    { name: "Liam Black", age: 47, condition: "HIV/AIDS", nextAppointment: "2023-10-12" },
+const initialData: Patient[] = [
     // ... más datos
 ];
 
@@ -64,7 +60,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
         // Filtrar por búsqueda
         if (searchTerm) {
             processedData = processedData.filter(item =>
-                item.name.toLowerCase().includes(searchTerm.toLowerCase())
+                item.firstName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -92,6 +88,24 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    const getData = async () => {
+        
+        const response = await fetch('/api/patients').then(res => res.json()) as any;
+
+        if (response.code === 200) {
+
+            console.log(response.patients);
+            
+            setData(response.patients as Patient[])
+        }
+        
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
+    
 
     return (
         <div className="w-full space-y-4">
@@ -144,7 +158,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                                 onClick={() => handleSort('condition')}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Condition
+                                    Email
                                     {sortConfig.key === 'condition' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                     )}
@@ -155,7 +169,7 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                                 onClick={() => handleSort('nextAppointment')}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Next Appointment
+                                    Phone Number
                                     {sortConfig.key === 'nextAppointment' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                     )}
@@ -166,10 +180,10 @@ export const PatientDashboard = ({ setState }: PatientDashboardProps) => {
                     <TableBody>
                         {currentData.map((patient, index) => (
                             <TableRow key={index}>
-                                <TableCell>{patient.name}</TableCell>
-                                <TableCell>{patient.age}</TableCell>
-                                <TableCell>{patient.condition}</TableCell>
-                                <TableCell>{patient.nextAppointment}</TableCell>
+                                <TableCell>{patient.firstName}</TableCell>
+                                <TableCell>{patient.age || "-"}</TableCell>
+                                <TableCell>{patient.email}</TableCell>
+                                <TableCell>{patient.phoneNumber || "-"}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

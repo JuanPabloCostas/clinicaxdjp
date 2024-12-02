@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String        @default("Sin nombre")
+  password     String        @default("123")
+  email        String        @unique
+  phoneNumber  String?       @default("Sin numero")
+  specialty    String?       @default("Sin especialidad")
+  appointments Appointment[]
+}
+
+model Test {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+}
+
+model Patient {
+  id                    String        @id @default(auto()) @map("_id") @db.ObjectId
+  firstName             String
+  lastName              String?
+  dateOfBirth           DateTime?
+  gender                String?
+  phoneNumber           String?
+  email                 String        @unique
+  curp                  String?       @unique
+  address               String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  appointments          Appointment[]
+}
+
+model Room {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  roomName String    @unique
+  size     String
+  status   String
+  machines Machine[]
+}
+
+model Machine {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  machineName  String        @unique
+  type         String
+  status       String
+  appointments Appointment[]
+
+  Room   Room   @relation(fields: [roomId], references: [id])
+  roomId String @db.ObjectId
+}
+
+model Appointment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  reason    String
+  Date      DateTime
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  Patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId String   @db.ObjectId
+  Machine   Machine  @relation(fields: [machineId], references: [id])
+  machineId String   @db.ObjectId
+}

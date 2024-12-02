@@ -23,10 +23,10 @@ export default function SideBar() {
     }
 
     const sidebarItems: sidebaritem[] = [
-        {
-            icon: MdSpaceDashboard,
-            title: "Dashboard"
-        },
+        // {
+        //     icon: MdSpaceDashboard,
+        //     title: "Dashboard"
+        // },
         {
             icon: MdOutlineCalendarToday,
             title: "Appointments"
@@ -47,10 +47,10 @@ export default function SideBar() {
             icon: MdMeetingRoom,
             title: "Rooms"
         },
-        {
-            icon: MdOutlineSettings,
-            title: "Settings"
-        },
+        // {
+        //     icon: MdOutlineSettings,
+        //     title: "Settings"
+        // },
     ]
 
     const isActiveRoute = (path: string) => {

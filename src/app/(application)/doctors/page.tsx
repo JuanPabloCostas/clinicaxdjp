@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/button';
 import {
     Table,
@@ -21,24 +21,21 @@ import {
 import AppHeader from "@/components/app/appHeader"
 
 const ITEMS_PER_PAGE = 10;
-const initialData = [
-    { name: "John Doe", specialty: "Cardiology", email: "johndoe@example.com", phone: "555-1234" },
-    { name: "Jane Smith", specialty: "Dermatology", email: "janesmith@example.com", phone: "555-5678" },
-    { name: "Alice Johnson", specialty: "Endocrinology", email: "alicejohnson@example.com", phone: "555-9012" },
-    { name: "Bob Brown", specialty: "Gastroenterology", email: "bobbrown@example.com", phone: "555-3456" },
-    { name: "Eve White", specialty: "Hematology", email: "evewhite@example.com", phone: "555-7890" },
-    { name: "Charlie Black", specialty: "Infectious Disease", email: "charlieblack@example.com", phone: "555-2345" },
-    { name: "Grace Green", specialty: "Nephrology", email: "gracegreen@example.com", phone: "555-6789" },
-    { name: "Harry Blue", specialty: "Neurology", email: "harryblue@example.com", phone: "555-0123" },
-    { name: "Ivy Brown", specialty: "Oncology", email: "ivybrown@example.com", phone: "555-4567" },
-    { name: "Jack White", specialty: "Pulmonology", email: "jackwhite@example.com", phone: "555-8901" },
-    { name: "Kelly Green", specialty: "Rheumatology", email: "kellygreen@example.com", phone: "555-2345" },
-    { name: "Liam Black", specialty: "Urology", email: "liamblack@example.com", phone: "555-6789" },
+
+interface Doctor {
+    id: string;
+    name: string;
+    specialty: string;
+    email: string;
+    phoneNumber: string;
+}
+
+const initialData: Doctor[] = [
     // ... más datos
 ];
 
 export default function page() {
-    const [data, setData] = useState(initialData);
+    const [data, setData] = useState<Doctor[]>(initialData);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
@@ -87,6 +84,29 @@ export default function page() {
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    const getData = async () => {
+
+        const response = await fetch("/api/doctors", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json()) as any
+
+        setData(response.doctors)
+
+        console.log({
+            "doctors": response.doctors
+        })
+
+    }
+    
+
+    useEffect(() => {
+        getData()
+    }, [])
+    
     
     return (
         <div className="w-full space-y-4">
@@ -156,7 +176,7 @@ export default function page() {
                                 <TableCell>{doctor.name}</TableCell>
                                 <TableCell>{doctor.specialty}</TableCell>
                                 <TableCell>{doctor.email}</TableCell>
-                                <TableCell>{doctor.phone}</TableCell>
+                                <TableCell>{doctor.phoneNumber}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

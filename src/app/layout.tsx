@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@fontsource/lexend-zetta";
 import '@fontsource/plus-jakarta-sans';
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "Bolsa de trabajo UAQ",
@@ -19,7 +20,11 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       </head>
-      <body className="font-sans"><main>{children}</main></body>
+      <body className="font-sans">
+        <main>
+          <AuthProvider>{children}</AuthProvider>
+        </main>
+        </body>
     </html>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from "../button";
 import {
     Table,
@@ -25,21 +25,27 @@ interface AppointmentsDashboardProps {
 
 const ITEMS_PER_PAGE = 10;
 
-const initialData = [
-    { patient: "John Doe", date: "2023-10-01", time: "10:00 AM", doctor: "Dr. Smith", status: "Confirmed" },
-    { patient: "Jane Smith", date: "2023-10-02", time: "11:00 AM", doctor: "Dr. Johnson", status: "Pending" },
-    { patient: "Alice Johnson", date: "2023-10-03", time: "12:00 PM", doctor: "Dr. White", status: "Canceled" },
-    { patient: "Bob Brown", date: "2023-10-04", time: "01:00 PM", doctor: "Dr. Black", status: "Pending" },
-    { patient: "Eve White", date: "2023-10-05", time: "02:00 PM", doctor: "Dr. Green", status: "Confirmed" },
-    { patient: "Charlie Black", date: "2023-10-06", time: "03:00 PM", doctor: "Dr. Blue", status: "Canceled" },
-    { patient: "Grace Green", date: "2023-10-07", time: "04:00 PM", doctor: "Dr. Brown", status: "Confirmed" },
-    { patient: "Harry Blue", date: "2023-10-08", time: "05:00 PM", doctor: "Dr. Green", status: "Pending" },
-    { patient: "Ivy Brown", date: "2023-10-09", time: "06:00 PM", doctor: "Dr. White", status: "Confirmed" },
-    { patient: "Jack White", date: "2023-10-10", time: "07:00 PM", doctor: "Dr. Johnson", status: "Pending" },
-    { patient: "Kelly Green", date: "2023-10-11", time: "08:00 PM", doctor: "Dr. Smith", status: "Confirmed" },
-    { patient: "Liam Black", date: "2023-10-12", time: "09:00 PM", doctor: "Dr. Brown", status: "Canceled" },
+interface Appointment {
+    id: string;
+    patientName: string;
+    machineName: string;
+    roomName: string;
+    formattedDay: string;
+    formattedTime: string;
+    reason: string;
+}
+
+const initialData: Appointment[] = [
+    // ... datos
+    {id: "1", patientName: "Juan Pablo", machineName: "CamaDentisa1", roomName: "Dentista", formattedDay: "4 de enero de 2025", formattedTime: "0:00", reason: "Consulta"},
+    {id: "2", patientName: "Juan Pablo", machineName: "CamaDentisa1", roomName: "Dentista", formattedDay: "4 de enero de 2025", formattedTime: "0:00", reason: "Consulta"},
+    {id: "3", patientName: "Juan Pablo", machineName: "CamaDentisa1", roomName: "Dentista", formattedDay: "4 de enero de 2025", formattedTime: "0:00", reason: "Consulta"},
+    {id: "4", patientName: "Juan Pablo", machineName: "CamaDentisa1", roomName: "Dentista", formattedDay: "4 de enero de 2025", formattedTime: "0:00", reason: "Consulta"},
+    
     // ... más datos
 ];
+
+
 
 export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) => {
     const [data, setData] = useState(initialData);
@@ -56,6 +62,12 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
         setSortConfig({ key, direction });
     };
 
+    const getAppointments = async () => {
+        const response = await fetch("/api/appointments");
+        const data = await response.json();
+        setData(data.appointments);
+    }
+
     // Datos filtrados y ordenados
     const filteredAndSortedData = useMemo(() => {
         let processedData = [...data];
@@ -63,7 +75,7 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
         // Filtrar por búsqueda
         if (searchTerm) {
             processedData = processedData.filter(item =>
-                item.patient.toLowerCase().includes(searchTerm.toLowerCase())
+                item.patientName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
@@ -91,6 +103,13 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    useEffect(() => {
+      getAppointments();
+    
+      
+    }, [])
+    
 
     return (
         <div className="w-full space-y-4">
@@ -132,7 +151,7 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
                                 onClick={() => handleSort('date')}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Date
+                                    Machine
                                     {sortConfig.key === 'date' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                     )}
@@ -143,7 +162,7 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
                                 onClick={() => handleSort('time')}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Time
+                                    Room
                                     {sortConfig.key === 'time' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                     )}
@@ -154,7 +173,7 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
                                 onClick={() => handleSort('doctor')}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Doctor
+                                    Day
                                     {sortConfig.key === 'doctor' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                     )}
@@ -165,7 +184,18 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
                                 onClick={() => handleSort('status')}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Status
+                                    Hour
+                                    {sortConfig.key === 'status' && (
+                                        <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                    )}
+                                </div>
+                            </TableHeaderCell>
+                            <TableHeaderCell 
+                                className="cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleSort('status')}
+                            >
+                                <div className="flex items-center gap-2 select-none">
+                                    Comments
                                     {sortConfig.key === 'status' && (
                                         <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                     )}
@@ -176,18 +206,12 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
                     <TableBody>
                         {currentData.map((appointment, index) => (
                             <TableRow key={index}>
-                                <TableCell>{appointment.patient}</TableCell>
-                                <TableCell>{appointment.date}</TableCell>
-                                <TableCell>{appointment.time}</TableCell>
-                                <TableCell>{appointment.doctor}</TableCell>
-                                <TableCell>
-                                    <div className='w-fit p-1 px-2 flex items-center gap-2 bg-[#31723417] rounded-lg'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-                                            <circle cx="3" cy="3" r="3" fill={appointment.status === "Confirmed" ? "#098833" : appointment.status === "Pending" ? "orange" : "red"}/>
-                                        </svg>
-                                        {appointment.status}
-                                    </div>
-                                </TableCell>
+                                <TableCell>{appointment.patientName}</TableCell>
+                                <TableCell>{appointment.machineName}</TableCell>
+                                <TableCell>{appointment.roomName}</TableCell>
+                                <TableCell>{appointment.formattedDay}</TableCell>
+                                <TableCell>{appointment.formattedTime}</TableCell>
+                                <TableCell>{appointment.reason}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

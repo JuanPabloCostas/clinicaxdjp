@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/button';
 import {
     Table,
@@ -15,24 +15,22 @@ import { Input } from '@/components/input';
 import {
     MdNavigateNext,
     MdNavigateBefore,
+    MdAdd,
 } from 'react-icons/md';
 
 import AppHeader from "@/components/app/appHeader"
+import { useRouter } from 'next/navigation';
+
+interface Room {
+    id: string;
+    roomName: string;
+    size: string;
+    status: "Operational" | "Maintenance" | "Closed";
+}
 
 const ITEMS_PER_PAGE = 10;
-const initialData = [
-    { id: 101, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
-    { id: 102, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
-    { id: 103, occupancy: "Vacant", patient: "", status: "Closed"},
-    { id: 104, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
-    { id: 105, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
-    { id: 106, occupancy: "Vacant", patient: "", status: "Closed"},
-    { id: 107, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
-    { id: 108, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
-    { id: 109, occupancy: "Vacant", patient: "", status: "Closed"},
-    { id: 110, occupancy: "Occupied", patient: "John Doe", status: "Operational"},
-    { id: 111, occupancy: "Occupied", patient: "Jane Doe", status: "Maintenance"},
-    { id: 112, occupancy: "Vacant", patient: "", status: "Closed"},
+const initialData: Room[] = [
+    
     // ... más datos
 ];
 
@@ -41,6 +39,7 @@ export default function page() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
+    const router = useRouter();
 
     // Función para ordenar
     const handleSort = (key: string) => {
@@ -86,6 +85,22 @@ export default function page() {
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    const getData = async () => {
+
+        const response = await fetch("/api/rooms", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json()) as any
+
+        setData(response.rooms)
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
     
     return (
         <div className="w-full space-y-4">
@@ -98,6 +113,13 @@ export default function page() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     type='search'
                 />
+                <Button 
+                    variant="green"
+                    onClick={() => {router.push("/rooms/add")}}
+                    icon={<MdAdd size={18} />}
+                >
+                    Add Room
+                </Button>
             </div>
             <TableRoot>
                 <Table>
@@ -108,7 +130,7 @@ export default function page() {
                                 onClick={() => handleSort("ID")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Room Number
+                                    Room Name
                                     {sortConfig.key === "ID" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
@@ -119,19 +141,8 @@ export default function page() {
                                 onClick={() => handleSort("occupancy")}
                             >
                                 <div className="flex items-center gap-2 select-none">
-                                    Occupancy
+                                    Room Size
                                     {sortConfig.key === "occupancy" && (
-                                        <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
-                                    )}
-                                </div>
-                            </TableHeaderCell>
-                            <TableHeaderCell
-                                className='cursor-pointer hover:bg-gray-100'
-                                onClick={() => handleSort("patient")}
-                            >
-                                <div className="flex items-center gap-2 select-none">
-                                    Patient
-                                    {sortConfig.key === "patient" && (
                                         <span>{sortConfig.direction === "asc" ? "↑" : "↓"}</span>
                                     )}
                                 </div>
@@ -152,9 +163,8 @@ export default function page() {
                     <TableBody>
                         {currentData.map((room, index) => (
                             <TableRow key={index}>
-                                <TableCell>{room.id}</TableCell>
-                                <TableCell>{room.occupancy}</TableCell>
-                                <TableCell>{room.patient}</TableCell>
+                                <TableCell>{room.roomName}</TableCell>
+                                <TableCell>{room.size}</TableCell>
                                 <TableCell>
                                     <div className='w-fit p-1 px-2 flex items-center gap-2 bg-[#31723417] rounded-lg'>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
