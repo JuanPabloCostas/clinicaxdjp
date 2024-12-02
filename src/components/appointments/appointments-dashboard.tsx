@@ -8,7 +8,7 @@ import {
     TableHeaderCell,
     TableRoot,
     TableRow,
-} from "../table";
+} from "../tablebitch";
 import { Input } from '../input';
 import {
     MdAdd,
@@ -45,10 +45,10 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
     const [data, setData] = useState(initialData);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
 
     // Función para ordenar
-    const handleSort = (key) => {
+    const handleSort = (key: string) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
@@ -69,7 +69,7 @@ export const AppointmentsDashboard = ({ setState }: AppointmentsDashboardProps) 
 
         // Ordenar
         if (sortConfig.key) {
-            processedData.sort((a, b) => {
+            processedData.sort((a: any, b: any) => {
                 if (sortConfig.key !== null) {
                     if (a[sortConfig.key] < b[sortConfig.key]) {
                         return sortConfig.direction === 'asc' ? -1 : 1;

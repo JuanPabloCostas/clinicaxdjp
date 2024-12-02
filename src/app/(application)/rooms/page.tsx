@@ -10,7 +10,7 @@ import {
     TableHeaderCell,
     TableRoot,
     TableRow,
-} from '@/components/table';
+} from '@/components/tablebitch';
 import { Input } from '@/components/input';
 import {
     MdNavigateNext,
@@ -40,10 +40,10 @@ export default function page() {
     const [data, setData] = useState(initialData);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
 
     // Función para ordenar
-    const handleSort = (key) => {
+    const handleSort = (key: string) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
@@ -64,7 +64,7 @@ export default function page() {
 
         // Ordenar
         if (sortConfig.key) {
-            processedData.sort((a, b) => {
+            processedData.sort((a: any, b: any) => {
                 if (sortConfig.key !== null) {
                     if (a[sortConfig.key] < b[sortConfig.key]) {
                         return sortConfig.direction === 'asc' ? -1 : 1;
